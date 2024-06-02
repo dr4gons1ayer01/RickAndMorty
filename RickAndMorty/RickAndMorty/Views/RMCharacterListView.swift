@@ -20,7 +20,7 @@ final class RMCharacterListView: UIView {
     }()
     
     private let collectionView: UICollectionView = {
-       let layout = UICollectionViewFlowLayout()
+        let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -40,6 +40,7 @@ final class RMCharacterListView: UIView {
         addSubviews(collectionView, spinner)
         addConstraints()
         spinner.startAnimating()
+        viewModel.delegate = self
         viewModel.fetchCharacters()
         setUpCollectionView()
     }
@@ -65,15 +66,16 @@ final class RMCharacterListView: UIView {
     private func setUpCollectionView() {
         collectionView.dataSource = viewModel
         collectionView.delegate = viewModel
-        
-        DispatchQueue.main.asyncAfter(deadline: .now()+2) {
-            self.spinner.stopAnimating()
-            
-            self.collectionView.isHidden = false
-            
-            UIView.animate(withDuration: 0.4) {
-                self.collectionView.alpha = 1
-            }
+    }
+}
+
+extension RMCharacterListView: RMCharacterListViewViewModelDelegate {
+    func didLoadInitialCharacters() {
+        spinner.stopAnimating()
+        collectionView.reloadData()     // Initial fetch
+        collectionView.isHidden = false
+        UIView.animate(withDuration: 0.4) {
+            self.collectionView.alpha = 1
         }
     }
 }
