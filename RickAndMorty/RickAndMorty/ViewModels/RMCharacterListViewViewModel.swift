@@ -68,7 +68,6 @@ final class RMCharacterListViewViewModel: NSObject {
         guard !isLoadingMoreCharacters else {
             return
         }
-        print("fetching more data")
         isLoadingMoreCharacters = true
         guard let request = RMRequest(url: url) else {
             isLoadingMoreCharacters = false
@@ -94,11 +93,8 @@ final class RMCharacterListViewViewModel: NSObject {
                 let indexPathsToAdd: [IndexPath] = Array(startingIndex..<(startingIndex+newCount)).compactMap {
                     return IndexPath(row: $0, section: 0)
                 }
-                print(indexPathsToAdd)
                 // Добавление новых персонажей
                 strongSelf.characters.append(contentsOf: moreResults)
-                 
-//                print(String("viewModel: "+strongSelf.cellViewModels.count))
 
                 DispatchQueue.main.async {
                     strongSelf.delegate?.didLoadMoreCharacters(
